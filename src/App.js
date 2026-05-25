@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import GlobalHeader from './components/GlobalHeader';
 import LeftSidebar from './components/LeftSidebar';
@@ -18,9 +18,60 @@ import CommercialPlanningGridConfig from './components/CommercialPlanningGridCon
 import CommercialHierarchySetupPage from './components/CommercialHierarchySetupPage';
 import CommercialMeasuresPage from './components/CommercialMeasuresPage';
 
+const WORKSPACE_PATH_SEGMENTS = {
+  salesVolume: 'sales-volume',
+  salesVolumeAaf: 'commercial-manufacturing'
+};
+
+const PATH_SEGMENT_TO_WORKSPACE = Object.entries(WORKSPACE_PATH_SEGMENTS).reduce(
+  (acc, [workspaceKey, segment]) => {
+    acc[segment] = workspaceKey;
+    return acc;
+  },
+  {}
+);
+
+const normalizePath = (path) => {
+  const trimmedPath = path.replace(/\/+$/, '');
+  return trimmedPath || '/';
+};
+
+const buildBasePath = (segments) => {
+  if (!segments.length) {
+    return '/';
+  }
+
+  return `/${segments.join('/')}/`;
+};
+
+const getRouteStateFromPath = (pathname) => {
+  const normalizedPath = normalizePath(pathname);
+  const pathSegments = normalizedPath.split('/').filter(Boolean);
+  const lastSegment = pathSegments[pathSegments.length - 1];
+  const selectedWorkspace = PATH_SEGMENT_TO_WORKSPACE[lastSegment] || null;
+  const basePath = buildBasePath(selectedWorkspace ? pathSegments.slice(0, -1) : pathSegments);
+
+  return {
+    basePath,
+    selectedWorkspace,
+    currentPage: selectedWorkspace ? 'setup' : 'landing'
+  };
+};
+
+const getWorkspacePath = (basePath, workspaceKey) => {
+  const routeSegment = WORKSPACE_PATH_SEGMENTS[workspaceKey];
+  if (!routeSegment) {
+    return basePath;
+  }
+
+  return `${basePath}${routeSegment}`;
+};
+
 function App() {
-  const [selectedWorkspace, setSelectedWorkspace] = useState(null);
-  const [currentPage, setCurrentPage] = useState('landing'); // 'landing', 'setup', 'planning', 'gridconfig', or 'hierarchySetup'
+  const initialRouteState = getRouteStateFromPath(window.location.pathname);
+  const [basePath, setBasePath] = useState(initialRouteState.basePath);
+  const [selectedWorkspace, setSelectedWorkspace] = useState(initialRouteState.selectedWorkspace);
+  const [currentPage, setCurrentPage] = useState(initialRouteState.currentPage); // 'landing', 'setup', 'planning', 'gridconfig', or 'hierarchySetup'
 
   const workspaces = {
     commercial: {
@@ -61,6 +112,31 @@ function App() {
   const handleNavigateToHierarchySetup = () => {
     setCurrentPage('hierarchySetup');
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const routeState = getRouteStateFromPath(window.location.pathname);
+      setBasePath(routeState.basePath);
+      setSelectedWorkspace(routeState.selectedWorkspace);
+      setCurrentPage(routeState.currentPage);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    const targetPath = currentPage === 'landing' || !selectedWorkspace
+      ? basePath
+      : getWorkspacePath(basePath, selectedWorkspace);
+
+    if (normalizePath(window.location.pathname) !== normalizePath(targetPath)) {
+      window.history.pushState({}, '', targetPath);
+    }
+  }, [basePath, currentPage, selectedWorkspace]);
 
   const activeWorkspace = selectedWorkspace ? workspaces[selectedWorkspace] : null;
   const isCommercialFlow = selectedWorkspace === 'salesVolumeAaf';
