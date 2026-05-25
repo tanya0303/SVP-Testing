@@ -25,6 +25,23 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script>
+      (function () {
+        var redirect = window.location.search;
+        if (!redirect || redirect.indexOf('?p=') !== 0) {
+          return;
+        }
+
+        var encodedPath = redirect.slice(3);
+        var decodedPath = encodedPath
+          .split('&')
+          .join('?')
+          .split('~and~')
+          .join('&');
+
+        window.history.replaceState(null, null, decodedPath + window.location.hash);
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
