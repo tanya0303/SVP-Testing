@@ -125,25 +125,10 @@ function WorkspaceLayout({ page }) {
 }
 
 function App() {
-  // #region agent log
-  React.useEffect(() => {
-    fetch('http://127.0.0.1:7870/ingest/9325323f-06f5-4975-b9e4-bcf2ed70f4ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8bba30'},body:JSON.stringify({sessionId:'8bba30',location:'App.js:160',message:'App mounted',data:{basename:process.env.PUBLIC_URL,currentPath:window.location.pathname,currentHref:window.location.href},timestamp:Date.now(),runId:'initial',hypothesisId:'A,D'})}).catch(()=>{});
-  }, []);
-  // #endregion
-  
-  // #region agent log
-  const NavigateWithLog = () => {
-    React.useEffect(() => {
-      fetch('http://127.0.0.1:7870/ingest/9325323f-06f5-4975-b9e4-bcf2ed70f4ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8bba30'},body:JSON.stringify({sessionId:'8bba30',location:'App.js:168',message:'Navigate component rendered',data:{to:'/sales-volume/setup'},timestamp:Date.now(),runId:'initial',hypothesisId:'B'})}).catch(()=>{});
-    }, []);
-    return <Navigate to="/sales-volume/setup" replace />;
-  };
-  // #endregion
-  
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
-        <Route path="/" element={<NavigateWithLog />} />
+        <Route path="/" element={<Navigate to="/sales-volume/setup" replace />} />
         <Route path="/:workspace/setup" element={<WorkspaceLayout page="setup" />} />
         <Route path="/:workspace/planning" element={<WorkspaceLayout page="planning" />} />
         <Route path="/:workspace/grid-config" element={<WorkspaceLayout page="gridconfig" />} />

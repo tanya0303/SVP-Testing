@@ -29,23 +29,11 @@
     -->
     <title>Salesforce Planning App</title>
     <script>
-      // #region agent log
-      fetch('http://127.0.0.1:7870/ingest/9325323f-06f5-4975-b9e4-bcf2ed70f4ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8bba30'},body:JSON.stringify({sessionId:'8bba30',location:'index.html:31',message:'Page load',data:{href:window.location.href,pathname:window.location.pathname,search:window.location.search,hash:window.location.hash},timestamp:Date.now(),runId:'initial',hypothesisId:'C,D'})}).catch(()=>{});
-      // #endregion
-      
       // Handle redirects from 404.html
       (function () {
         var redirect = window.location.search;
-        // #region agent log
-        fetch('http://127.0.0.1:7870/ingest/9325323f-06f5-4975-b9e4-bcf2ed70f4ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8bba30'},body:JSON.stringify({sessionId:'8bba30',location:'index.html:38',message:'Redirect check',data:{redirect:redirect,hasRedirect:!!redirect,startsWithP:redirect.indexOf('?p=/')===0},timestamp:Date.now(),runId:'initial',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
-        
         if (redirect && redirect.indexOf('?p=/') === 0) {
           var newPath = redirect.slice(4).split('~').join('&');
-          // #region agent log
-          fetch('http://127.0.0.1:7870/ingest/9325323f-06f5-4975-b9e4-bcf2ed70f4ba',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8bba30'},body:JSON.stringify({sessionId:'8bba30',location:'index.html:45',message:'Applying redirect',data:{newPath:newPath,finalPath:window.location.pathname+newPath+window.location.hash},timestamp:Date.now(),runId:'initial',hypothesisId:'C'})}).catch(()=>{});
-          // #endregion
-          
           window.history.replaceState(
             null, 
             null,
