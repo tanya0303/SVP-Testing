@@ -1017,23 +1017,19 @@ export default function PlanningGridConfig({ onClose, onBack }) {
                         <div className="planning-grid-create-header-actions">
                           <button
                             type="button"
-                            className="edit-panel-icon-button edit-panel-icon-button-cancel"
+                            className="edit-panel-text-button edit-panel-text-button-cancel"
                             onClick={() => setShowCreateMeasureTypeView(false)}
                             aria-label="Cancel create measure"
                           >
-                            ✕
+                            Cancel
                           </button>
                           <button
                             type="button"
-                            className="edit-panel-icon-button edit-panel-icon-button-save"
+                            className="edit-panel-text-button edit-panel-text-button-save"
                             onClick={handleCreateMeasure}
-                            disabled={!canCreateMeasure}
                             aria-label="Save measure"
-                            style={{ opacity: canCreateMeasure ? 1 : 0.5, cursor: canCreateMeasure ? 'pointer' : 'not-allowed' }}
                           >
-                            <svg viewBox="0 0 24 24">
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
+                            Save
                           </button>
                         </div>
                       </div>
@@ -1329,6 +1325,7 @@ export default function PlanningGridConfig({ onClose, onBack }) {
                     <button
                       className="modal-save-button"
                       onClick={closeAddMeasuresModal}
+                      disabled={true}
                     >
                       Done
                     </button>

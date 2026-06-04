@@ -1722,6 +1722,12 @@ input[type="checkbox"] {
   height: 36px;
 }
 
+.modal-save-button:disabled {
+  background-color: #c9c9c9;
+  color: #919191;
+  cursor: not-allowed;
+}
+
 .time-granularity-modal-content {
   align-items: flex-start;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
 import GlobalHeader from './components/GlobalHeader';
 import LeftSidebar from './components/LeftSidebar';
@@ -20,50 +20,19 @@ import CommercialHierarchySetupPage from './components/CommercialHierarchySetupP
 import CommercialMeasuresPage from './components/CommercialMeasuresPage';
 
 const workspaces = {
-  'flow-phoenix': {
+  'sales-volume': {
     key: 'salesVolume',
     title: 'Sales Volume Planning',
     description: 'Manage sales volume forecasts, planning steps, and setup in a dedicated workspace.',
     isCommercial: false
   },
-  'flow-atlas': {
+  'commercial-manufacturing': {
     key: 'salesVolumeAaf',
     title: 'Commercial Planning for Manufacturing',
     description: 'Configure forecasts, dimensions, and workflows for manufacturing commercial plans.',
     isCommercial: true
   }
 };
-
-function LandingPage() {
-  const navigate = useNavigate();
-
-  return (
-    <div className="landing-page">
-      <div className="landing-content">
-        <h1 className="landing-title">Choose a Planning Workspace</h1>
-        <p className="landing-subtitle">Select a card to open the planning experience.</p>
-        <div className="landing-cards">
-          <button
-            className="landing-card"
-            onClick={() => navigate('/flow-phoenix/setup')}
-            type="button"
-          >
-            <h2>Sales Volume Planning</h2>
-            <p>Open a duplicated planning page dedicated to Sales Volume Planning.</p>
-          </button>
-          <button
-            className="landing-card"
-            onClick={() => navigate('/flow-atlas/setup')}
-            type="button"
-          >
-            <h2>Commercial Planning for Manufacturing</h2>
-            <p>Open a duplicated planning page dedicated to Commercial Planning for Manufacturing.</p>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function WorkspaceLayout({ page }) {
   const navigate = useNavigate();
@@ -159,7 +128,7 @@ function App() {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/sales-volume/setup" replace />} />
         <Route path="/:workspace/setup" element={<WorkspaceLayout page="setup" />} />
         <Route path="/:workspace/planning" element={<WorkspaceLayout page="planning" />} />
         <Route path="/:workspace/grid-config" element={<WorkspaceLayout page="gridconfig" />} />

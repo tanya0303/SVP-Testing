@@ -4,44 +4,45 @@ This document explains the URL structure and routing implementation for the Sale
 
 ## Route Structure
 
-The app now uses React Router to provide proper URL-based navigation. Each page has its own unique URL that can be bookmarked and refreshed.
+The app now uses React Router to provide proper URL-based navigation. The app directly opens to the Sales Volume Planning workspace by default.
 
 ### Available Routes
 
-#### Landing Page
+#### Default Route
 - **URL:** `/`
-- **Description:** Workspace selection page where users choose between Sales Volume Planning and Commercial Planning for Manufacturing
+- **Redirects to:** `/sales-volume/setup`
+- **Description:** Root path automatically redirects to Sales Volume Planning setup page
 
-#### Sales Volume Planning Workspace (Flow Phoenix)
-- **Setup Page:** `/flow-phoenix/setup`
+#### Sales Volume Planning Workspace
+- **Setup Page:** `/sales-volume/setup`
   - Main setup page with steps and configuration options
   
-- **Planning View:** `/flow-phoenix/planning`
+- **Planning View:** `/sales-volume/planning`
   - Planning view with data grid and planning tools
   
-- **Grid Configuration:** `/flow-phoenix/grid-config`
+- **Grid Configuration:** `/sales-volume/grid-config`
   - Configure grid layout, dimensions, and measures
   
-- **Hierarchy Setup:** `/flow-phoenix/hierarchy-setup`
+- **Hierarchy Setup:** `/sales-volume/hierarchy-setup`
   - Configure hierarchies and their levels
   
-- **Measures Page:** `/flow-phoenix/measures`
+- **Measures Page:** `/sales-volume/measures`
   - Manage measures and measure sets
 
-#### Commercial Planning for Manufacturing Workspace (Flow Atlas)
-- **Setup Page:** `/flow-atlas/setup`
+#### Commercial Planning for Manufacturing Workspace
+- **Setup Page:** `/commercial-manufacturing/setup`
   - Main setup page with steps and configuration options
   
-- **Planning View:** `/flow-atlas/planning`
+- **Planning View:** `/commercial-manufacturing/planning`
   - Planning view with data grid and planning tools
   
-- **Grid Configuration:** `/flow-atlas/grid-config`
+- **Grid Configuration:** `/commercial-manufacturing/grid-config`
   - Configure grid layout, dimensions, and measures
   
-- **Hierarchy Setup:** `/flow-atlas/hierarchy-setup`
+- **Hierarchy Setup:** `/commercial-manufacturing/hierarchy-setup`
   - Configure hierarchies and their levels
   
-- **Measures Page:** `/flow-atlas/measures`
+- **Measures Page:** `/commercial-manufacturing/measures`
   - Manage measures and measure sets
 
 ## Key Features
@@ -94,18 +95,18 @@ const { workspace } = useParams();
 
 ### Direct Access
 Users can navigate directly to any page by typing the URL:
-- `http://localhost:3000/flow-phoenix/planning`
-- `http://localhost:3000/flow-atlas/hierarchy-setup`
+- `http://localhost:3000/sales-volume/planning`
+- `http://localhost:3000/commercial-manufacturing/hierarchy-setup`
 
 ### In-App Navigation
 All navigation buttons and links update the URL automatically:
-- Clicking "Go to Planning View" → Updates URL to `/flow-phoenix/planning`
-- Clicking "Configure Grid" → Updates URL to `/flow-phoenix/grid-config`
+- Clicking "Go to Planning View" → Updates URL to `/sales-volume/planning`
+- Clicking "Configure Grid" → Updates URL to `/sales-volume/grid-config`
 
 ### Sharing Links
 Users can share links to specific pages:
-- Share setup page: `/flow-phoenix/setup`
-- Share planning view: `/flow-atlas/planning`
+- Share setup page: `/sales-volume/setup`
+- Share planning view: `/commercial-manufacturing/planning`
 
 ## Benefits
 
@@ -129,13 +130,13 @@ To add a new route:
 Workspace configurations are defined in the `workspaces` object in `App.js`:
 ```javascript
 const workspaces = {
-  'flow-phoenix': {
+  'sales-volume': {
     key: 'salesVolume',
     title: 'Sales Volume Planning',
     description: '...',
     isCommercial: false
   },
-  'flow-atlas': {
+  'commercial-manufacturing': {
     key: 'salesVolumeAaf',
     title: 'Commercial Planning for Manufacturing',
     description: '...',
@@ -153,7 +154,7 @@ If you get a 404 error when refreshing a page in production:
 
 ### Wrong Workspace Loading
 If the wrong workspace loads:
-- Check the URL parameter matches 'flow-phoenix' or 'flow-atlas'
+- Check the URL parameter matches 'sales-volume' or 'commercial-manufacturing'
 - Verify workspace configuration in App.js
 
 ### Navigation Not Working
