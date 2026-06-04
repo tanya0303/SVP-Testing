@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
 import GlobalHeader from './components/GlobalHeader';
 import LeftSidebar from './components/LeftSidebar';
@@ -18,128 +19,62 @@ import CommercialPlanningGridConfig from './components/CommercialPlanningGridCon
 import CommercialHierarchySetupPage from './components/CommercialHierarchySetupPage';
 import CommercialMeasuresPage from './components/CommercialMeasuresPage';
 
-const WORKSPACE_PATH_SEGMENTS = {
-  salesVolume: 'sales-volume',
-  salesVolumeAaf: 'commercial-manufacturing'
-};
-
-const PATH_SEGMENT_TO_WORKSPACE = Object.entries(WORKSPACE_PATH_SEGMENTS).reduce(
-  (acc, [workspaceKey, segment]) => {
-    acc[segment] = workspaceKey;
-    return acc;
+const workspaces = {
+  'flow-phoenix': {
+    key: 'salesVolume',
+    title: 'Sales Volume Planning',
+    description: 'Manage sales volume forecasts, planning steps, and setup in a dedicated workspace.',
+    isCommercial: false
   },
-  {}
-);
-
-const normalizePath = (path) => {
-  const trimmedPath = path.replace(/\/+$/, '');
-  return trimmedPath || '/';
+  'flow-atlas': {
+    key: 'salesVolumeAaf',
+    title: 'Commercial Planning for Manufacturing',
+    description: 'Configure forecasts, dimensions, and workflows for manufacturing commercial plans.',
+    isCommercial: true
+  }
 };
 
-const buildBasePath = (segments) => {
-  if (!segments.length) {
-    return '/';
+function LandingPage() {
+  const navigate = useNavigate();
+
+  return (
+    <div className="landing-page">
+      <div className="landing-content">
+        <h1 className="landing-title">Choose a Planning Workspace</h1>
+        <p className="landing-subtitle">Select a card to open the planning experience.</p>
+        <div className="landing-cards">
+          <button
+            className="landing-card"
+            onClick={() => navigate('/flow-phoenix/setup')}
+            type="button"
+          >
+            <h2>Sales Volume Planning</h2>
+            <p>Open a duplicated planning page dedicated to Sales Volume Planning.</p>
+          </button>
+          <button
+            className="landing-card"
+            onClick={() => navigate('/flow-atlas/setup')}
+            type="button"
+          >
+            <h2>Commercial Planning for Manufacturing</h2>
+            <p>Open a duplicated planning page dedicated to Commercial Planning for Manufacturing.</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WorkspaceLayout({ page }) {
+  const navigate = useNavigate();
+  const { workspace } = useParams();
+  const workspaceConfig = workspaces[workspace];
+
+  if (!workspaceConfig) {
+    return <div>Workspace not found</div>;
   }
 
-  return `/${segments.join('/')}/`;
-};
-
-const getRouteStateFromPath = (pathname) => {
-  const normalizedPath = normalizePath(pathname);
-  const pathSegments = normalizedPath.split('/').filter(Boolean);
-  const lastSegment = pathSegments[pathSegments.length - 1];
-  const selectedWorkspace = PATH_SEGMENT_TO_WORKSPACE[lastSegment] || null;
-  const basePath = buildBasePath(selectedWorkspace ? pathSegments.slice(0, -1) : pathSegments);
-
-  return {
-    basePath,
-    selectedWorkspace,
-    currentPage: selectedWorkspace ? 'setup' : 'landing'
-  };
-};
-
-const getWorkspacePath = (basePath, workspaceKey) => {
-  const routeSegment = WORKSPACE_PATH_SEGMENTS[workspaceKey];
-  if (!routeSegment) {
-    return basePath;
-  }
-
-  return `${basePath}${routeSegment}`;
-};
-
-function App() {
-  const initialRouteState = getRouteStateFromPath(window.location.pathname);
-  const [basePath, setBasePath] = useState(initialRouteState.basePath);
-  const [selectedWorkspace, setSelectedWorkspace] = useState(initialRouteState.selectedWorkspace);
-  const [currentPage, setCurrentPage] = useState(initialRouteState.currentPage); // 'landing', 'setup', 'planning', 'gridconfig', or 'hierarchySetup'
-
-  const workspaces = {
-    commercial: {
-      title: 'Commercial Planning for Manufacturing',
-      description: 'Configure forecasts, dimensions, and workflows for manufacturing commercial plans.'
-    },
-    salesVolume: {
-      title: 'Sales Volume Planning',
-      description: 'Manage sales volume forecasts, planning steps, and setup in a dedicated workspace.'
-    },
-    salesVolumeAaf: {
-      title: 'Commercial Planning for Manufacturing',
-      description: 'Configure forecasts, dimensions, and workflows for manufacturing commercial plans.'
-    }
-  };
-
-  const handleWorkspaceSelect = (workspaceKey) => {
-    setSelectedWorkspace(workspaceKey);
-    setCurrentPage('setup');
-  };
-
-  const handleNavigateToPlanningView = () => {
-    setCurrentPage('planning');
-  };
-
-  const handleNavigateToSetup = () => {
-    setCurrentPage('setup');
-  };
-
-  const handleNavigateToGridConfig = () => {
-    setCurrentPage('gridconfig');
-  };
-
-  const handleNavigateToMeasuresPage = () => {
-    setCurrentPage('measures');
-  };
-
-  const handleNavigateToHierarchySetup = () => {
-    setCurrentPage('hierarchySetup');
-  };
-
-  useEffect(() => {
-    const handlePopState = () => {
-      const routeState = getRouteStateFromPath(window.location.pathname);
-      setBasePath(routeState.basePath);
-      setSelectedWorkspace(routeState.selectedWorkspace);
-      setCurrentPage(routeState.currentPage);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
-
-  useEffect(() => {
-    const targetPath = currentPage === 'landing' || !selectedWorkspace
-      ? basePath
-      : getWorkspacePath(basePath, selectedWorkspace);
-
-    if (normalizePath(window.location.pathname) !== normalizePath(targetPath)) {
-      window.history.pushState({}, '', targetPath);
-    }
-  }, [basePath, currentPage, selectedWorkspace]);
-
-  const activeWorkspace = selectedWorkspace ? workspaces[selectedWorkspace] : null;
-  const isCommercialFlow = selectedWorkspace === 'salesVolumeAaf';
+  const isCommercialFlow = workspaceConfig.isCommercial;
   const ActiveLeftSidebar = isCommercialFlow ? CommercialLeftSidebar : LeftSidebar;
   const ActiveHeroContainer = isCommercialFlow ? CommercialHeroContainer : HeroContainer;
   const ActiveMainContent = isCommercialFlow ? CommercialMainContent : MainContent;
@@ -149,66 +84,43 @@ function App() {
   const ActiveMeasuresPage = isCommercialFlow ? CommercialMeasuresPage : MeasuresPage;
   const ActivePlanningGridConfig = isCommercialFlow ? CommercialPlanningGridConfig : PlanningGridConfig;
 
-  if (currentPage === 'landing') {
-    return (
-      <div className="landing-page">
-        <div className="landing-content">
-          <h1 className="landing-title">Choose a Planning Workspace</h1>
-          <p className="landing-subtitle">Select a card to open the planning experience.</p>
-          <div className="landing-cards">
-            <button
-              className="landing-card"
-              onClick={() => handleWorkspaceSelect('salesVolume')}
-              type="button"
-            >
-              <h2>Sales Volume Planning</h2>
-              <p>Open a duplicated planning page dedicated to Sales Volume Planning.</p>
-            </button>
-            <button
-              className="landing-card"
-              onClick={() => handleWorkspaceSelect('salesVolumeAaf')}
-              type="button"
-            >
-              <h2>Commercial Planning for Manufacturing</h2>
-              <p>Open a duplicated planning page dedicated to Commercial Planning for Manufacturing.</p>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleNavigateToPlanningView = () => navigate(`/${workspace}/planning`);
+  const handleNavigateToSetup = () => navigate(`/${workspace}/setup`);
+  const handleNavigateToGridConfig = () => navigate(`/${workspace}/grid-config`);
+  const handleNavigateToMeasuresPage = () => navigate(`/${workspace}/measures`);
+  const handleNavigateToHierarchySetup = () => navigate(`/${workspace}/hierarchy-setup`);
 
   return (
     <div className="app-container">
       <GlobalHeader />
       <div className="main-layout">
-        {currentPage !== 'measures' && currentPage !== 'planning' && currentPage !== 'gridconfig' && (
+        {page !== 'measures' && page !== 'planning' && page !== 'gridconfig' && (
           <ActiveLeftSidebar
-            currentPage={currentPage}
+            currentPage={page}
             onNavigateToHierarchySetup={handleNavigateToHierarchySetup}
             onNavigateToMeasuresPage={handleNavigateToMeasuresPage}
             onNavigateToPlanningView={handleNavigateToPlanningView}
           />
         )}
-        {currentPage === 'setup' ? (
+        {page === 'setup' ? (
           <div className="content-wrapper">
             <ActiveHeroContainer
-              title={activeWorkspace?.title}
-              description={activeWorkspace?.description}
+              title={workspaceConfig.title}
+              description={workspaceConfig.description}
             />
             <div className="content-body-wrapper">
               <div className="main-content-column">
                 <ActiveMainContent
-                  planningName={activeWorkspace?.title}
+                  planningName={workspaceConfig.title}
                   onNavigateToPlanningView={handleNavigateToPlanningView}
                   onNavigateToHierarchySetup={handleNavigateToHierarchySetup}
                   onNavigateToMeasuresPage={handleNavigateToMeasuresPage}
                 />
               </div>
-              <ActiveRightColumn planningName={activeWorkspace?.title} />
+              <ActiveRightColumn planningName={workspaceConfig.title} />
             </div>
           </div>
-        ) : currentPage === 'planning' ? (
+        ) : page === 'planning' ? (
           <div className="content-wrapper" style={{ marginLeft: '0', width: '100%' }}>
             <ActivePlanningViewPage
               onNavigateBack={handleNavigateToSetup}
@@ -217,11 +129,11 @@ function App() {
               onNavigateToHierarchySetup={handleNavigateToHierarchySetup}
             />
           </div>
-        ) : currentPage === 'hierarchySetup' ? (
+        ) : page === 'hierarchySetup' ? (
           <div className="content-wrapper" style={{ marginLeft: '225px', width: 'calc(100% - 225px)' }}>
             <ActiveHierarchySetupPage />
           </div>
-        ) : currentPage === 'measures' ? (
+        ) : page === 'measures' ? (
           <div className="content-wrapper" style={{ marginLeft: '0', width: '100%' }}>
             <ActiveMeasuresPage
               onNavigateToPlanConfig={handleNavigateToPlanningView}
@@ -234,12 +146,27 @@ function App() {
             style={{ marginLeft: '0', width: '100vw', maxWidth: '100vw' }}
           >
             <ActivePlanningGridConfig
-              onBack={() => setCurrentPage('planning')}
+              onBack={() => navigate(`/${workspace}/planning`)}
             />
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/:workspace/setup" element={<WorkspaceLayout page="setup" />} />
+        <Route path="/:workspace/planning" element={<WorkspaceLayout page="planning" />} />
+        <Route path="/:workspace/grid-config" element={<WorkspaceLayout page="gridconfig" />} />
+        <Route path="/:workspace/hierarchy-setup" element={<WorkspaceLayout page="hierarchySetup" />} />
+        <Route path="/:workspace/measures" element={<WorkspaceLayout page="measures" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

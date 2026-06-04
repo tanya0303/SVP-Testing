@@ -7,8 +7,11 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Salesforce Planning App - Interactive Planning Workspace"
     />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -39,7 +42,15 @@
           .split('~and~')
           .join('&');
 
-        window.history.replaceState(null, null, decodedPath + window.location.hash);
+        // Extract the basename from the current URL
+        // For GitHub Pages, this will be '/salesforce-planning-app'
+        var pathname = window.location.pathname;
+        var segments = pathname.split('/').filter(Boolean);
+        var basename = segments.length > 0 ? '/' + segments[0] : '';
+
+        // Prepend basename to the decoded path
+        var fullPath = basename + decodedPath + window.location.hash;
+        window.history.replaceState(null, null, fullPath);
       })();
     </script>
   </head>

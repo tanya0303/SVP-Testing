@@ -133,6 +133,14 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
     setCreateLevelMenuIndex(createLevelMenuIndex === index ? null : index);
   };
 
+  const handleCreateLevelNameChange = (index, value) => {
+    setCreateLevels((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], name: value };
+      return updated;
+    });
+  };
+
   const handleAddCreateLevel = (index) => {
     const newLevels = [...createLevels];
     const maxId = Math.max(...newLevels.map((level) => level.id));
@@ -172,11 +180,21 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
     const trimmedHierarchyName = createHierarchyName.trim();
     if (!trimmedHierarchyName) return;
 
+    // Collect level names from the inputs
+    const levelNames = createLevels.map((level) => {
+      const trimmedName = level.name.trim();
+      return trimmedName || 'Enter Name';
+    });
+
+    // Build level structure string
+    const levelStructure = `${createLevels.length} Levels (${levelNames.join('-->')})`;
+
     const newHierarchy = {
       id: `new-${Date.now()}`,
       dimension: createDimension,
       hierarchyName: trimmedHierarchyName,
-      levelStructure: `${createLevels.length} Levels (Custom)`,
+      levelNames: levelNames,
+      levelStructure: levelStructure,
       dataStatus: 'Not Synced',
       createdOn: 'May 14, 2026'
     };
@@ -318,13 +336,11 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
                     <p className="manage-hierarchies-2-panel-title">Create New Hierarchy</p>
                   </div>
                   <div className="edit-panel-header-actions">
-                    <button type="button" className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeCreatePanel}>
-                      ✕
+                    <button type="button" className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeCreatePanel}>
+                      Cancel
                     </button>
-                    <button type="button" className="edit-panel-icon-button edit-panel-icon-button-save" onClick={handleSaveCreateHierarchy}>
-                      <svg viewBox="0 0 24 24">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
+                    <button type="button" className="edit-panel-text-button edit-panel-text-button-save" onClick={handleSaveCreateHierarchy}>
+                      Save
                     </button>
                   </div>
                 </>
@@ -341,13 +357,11 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
                     <p className="manage-hierarchies-2-panel-title">Edit Hierarchy</p>
                   </div>
                   <div className="edit-panel-header-actions">
-                    <button type="button" className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeEditPanel}>
-                      ✕
+                    <button type="button" className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeEditPanel}>
+                      Cancel
                     </button>
-                    <button type="button" className="edit-panel-icon-button edit-panel-icon-button-save" onClick={handleSaveEditedHierarchy}>
-                      <svg viewBox="0 0 24 24">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
+                    <button type="button" className="edit-panel-text-button edit-panel-text-button-save" onClick={handleSaveEditedHierarchy}>
+                      Save
                     </button>
                   </div>
                 </>
@@ -550,7 +564,8 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
                                 type="text"
                                 className="clone-name-input"
                                 placeholder="Enter Name"
-                                defaultValue={levelData.name}
+                                value={levelData.name}
+                                onChange={(e) => handleCreateLevelNameChange(index, e.target.value)}
                               />
                             </div>
                             <div className="clone-table-cell clone-table-cell-actions">
@@ -646,7 +661,13 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
         </div>
 
         <div className="modal-footer">
-          <button className="modal-done-button" onClick={onClose}>Done</button>
+          <button 
+            className="modal-done-button" 
+            onClick={onClose}
+            disabled={createPanelOpen || editPanelOpen}
+          >
+            Done
+          </button>
         </div>
       </div>
     </div>

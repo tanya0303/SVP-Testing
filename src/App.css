@@ -2104,6 +2104,12 @@ input[type="checkbox"] {
   height: 32px;
 }
 
+.modal-done-button:disabled {
+  background-color: #c9c9c9;
+  color: #919191;
+  cursor: not-allowed;
+}
+
 
 /* Manage Hierarchies 2 */
 .modal-hierarchies-2 {
@@ -3131,6 +3137,55 @@ input[type="checkbox"] {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+/* Text Button Styles for Cancel/Save */
+.edit-panel-text-button {
+  height: 32px;
+  border: 1px solid #c9c9c9;
+  background-color: white;
+  color: #5c5c5c;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  padding: 7px 16px;
+  border-radius: 4px;
+}
+
+.edit-panel-text-button:hover {
+  background-color: #f3f3f3;
+  border-color: #a9a9a9;
+}
+
+.edit-panel-text-button-cancel {
+  margin-right: 8px;
+}
+
+.edit-panel-text-button-save {
+  background-color: #0176d3;
+  color: white;
+  border-color: #0176d3;
+}
+
+.edit-panel-text-button-save:hover {
+  background-color: #014c8d;
+  border-color: #014c8d;
+}
+
+.edit-panel-text-button-danger {
+  background-color: #ba0517;
+  color: white;
+  border-color: #ba0517;
+}
+
+.edit-panel-text-button-danger:hover {
+  background-color: #952c28;
+  border-color: #952c28;
 }
 
 /* Clone Panel Styles */

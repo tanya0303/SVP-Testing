@@ -4,9 +4,10 @@ const imgCloseIcon = "data:image/svg+xml,%3Csvg width='24' height='24' viewBox='
 const imgDragHandleIcon = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='3.5' r='1' fill='%23747474'/%3E%3Ccircle cx='4' cy='7' r='1' fill='%23747474'/%3E%3Ccircle cx='4' cy='10.5' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='3.5' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='7' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='10.5' r='1' fill='%23747474'/%3E%3C/svg%3E";
 const imgRemoveIcon = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.5 3.5L3.5 10.5M3.5 3.5l7 7' stroke='%235C5C5C' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E";
 const imgMeasuresEmptyState = "data:image/svg+xml,%3Csvg width='126' height='115' viewBox='0 0 126 115' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M14 84V29c0-8.8 7.2-16 16-16h25l11 11h46c6.6 0 12 5.4 12 12v48c0 6.6-5.4 12-12 12H26c-6.6 0-12-5.4-12-12z' fill='%23EAF2FF'/%3E%3Ccircle cx='47' cy='39' r='14' fill='%235A8CFF'/%3E%3Cpath d='M66 70l25-25 8 8-25 25-8 3 3-11z' fill='%2396B8FF'/%3E%3Cpath d='M91 45l5-5 8 8-5 5-8-8z' fill='%23BCD2FF'/%3E%3Cpath d='M1 58h12M113 17h12M102 113V87M91 113l11-26M113 113l-11-26' stroke='%230176D3' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E";
-const imgTimeGridPreview = "/time-grid-preview.png";
-const imgAccountGridPreview = "/account-grid-preview.png";
-const imgProductGridPreview = "/product-grid-preview.png";
+const imgTimeGridPreview = `${process.env.PUBLIC_URL}/time-grid-preview.png`;
+const imgAccountGridPreview = `${process.env.PUBLIC_URL}/account-grid-preview.png`;
+const imgProductGridPreview = `${process.env.PUBLIC_URL}/product-grid-preview.png`;
+const imgMeasuresGridPreview = `${process.env.PUBLIC_URL}/measures-grid-preview.png`;
 const imgSearchSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='4.2' stroke='%239E9E9E' stroke-width='1.2'/%3E%3Cpath d='M9.2 9.2L12 12' stroke='%239E9E9E' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E";
 const imgDropdownSmall = "data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.5 4.5L6 8L9.5 4.5' stroke='%23747474' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
 const imgEditIconSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.4 11.6l2.1-.4 5.2-5.2-1.7-1.7-5.2 5.2-.4 2.1z' stroke='%23666' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.1 3.6l1.7 1.7' stroke='%23666' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E";
@@ -732,7 +733,20 @@ export default function PlanningGridConfig({ onClose, onBack }) {
               </p>
 
               <div className="planning-grid-preview-image">
-                {selectedComponentTab === 'Dimensions' && (activeDimension === 'Time' || activeDimension === 'Account' || activeDimension === 'Product') ? (
+                {selectedComponentTab === 'Measures' ? (
+                  measureSubsets.length > 0 ? (
+                    <img
+                      src={imgMeasuresGridPreview}
+                      alt="Grid preview with measures"
+                      className="planning-grid-preview-screenshot"
+                    />
+                  ) : (
+                    <div className="planning-grid-preview-placeholder">
+                      <span>Grid Preview</span>
+                      <p>Preview will be generated once you add measure subsets</p>
+                    </div>
+                  )
+                ) : (activeDimension === 'Time' || activeDimension === 'Account' || activeDimension === 'Product') ? (
                   <img
                     src={
                       activeDimension === 'Time'

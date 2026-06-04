@@ -674,7 +674,13 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
 
           {/* Modal Footer */}
           <div className="modal-footer modal-footer-bleed">
-            <button className="modal-done-button" onClick={onClose}>Done</button>
+            <button 
+              className="modal-done-button" 
+              onClick={onClose}
+              disabled={editPanelOpen || clonePanelOpen || deletePanelOpen || createPanelOpen || assignSubsetPanelOpen}
+            >
+              Done
+            </button>
           </div>
         </div>
 
@@ -687,13 +693,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
               </button>
               <h3 className="edit-panel-title">Edit Measure</h3>
               <div className="edit-panel-header-actions">
-                <button className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeEditPanel}>
-                  ✕
+                <button className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeEditPanel}>
+                  Cancel
                 </button>
-                <button className="edit-panel-icon-button edit-panel-icon-button-save">
-                  <svg viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <button className="edit-panel-text-button edit-panel-text-button-save">
+                  Save
                 </button>
               </div>
             </div>
@@ -888,13 +892,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
             <div className="edit-panel-header">
               <h3 className="edit-panel-title">Clone Measure</h3>
               <div className="edit-panel-header-actions">
-                <button className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeClonePanel}>
-                  ✕
+                <button className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeClonePanel}>
+                  Cancel
                 </button>
-                <button className="edit-panel-icon-button edit-panel-icon-button-save">
-                  <svg viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <button className="edit-panel-text-button edit-panel-text-button-save">
+                  Save
                 </button>
               </div>
             </div>
@@ -1089,13 +1091,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
             <div className="edit-panel-header">
               <h3 className="edit-panel-title">Delete Measure</h3>
               <div className="edit-panel-header-actions">
-                <button className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeDeletePanel}>
-                  ✕
+                <button className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeDeletePanel}>
+                  Cancel
                 </button>
-                <button className="edit-panel-icon-button edit-panel-icon-button-danger">
-                  <svg viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                <button className="edit-panel-text-button edit-panel-text-button-danger">
+                  Delete
                 </button>
               </div>
             </div>
@@ -1144,16 +1144,14 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                 <h3 className="edit-panel-title">Create New Measure</h3>
               )}
               <div className="edit-panel-header-actions">
-                <button className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeCreatePanel}>
-                  ✕
+                <button className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeCreatePanel}>
+                  Cancel
                 </button>
-                <button className="edit-panel-icon-button edit-panel-icon-button-save" onClick={() => {
+                <button className="edit-panel-text-button edit-panel-text-button-save" onClick={() => {
                   closeCreatePanel();
                   showSuccessToast('Measure created successfully');
                 }}>
-                  <svg viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                  Save
                 </button>
               </div>
             </div>
@@ -1441,11 +1439,11 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
             <div className="edit-panel-header">
               <h3 className="edit-panel-title">Assign to Measure Subset</h3>
               <div className="edit-panel-header-actions">
-                <button className="edit-panel-icon-button edit-panel-icon-button-cancel" onClick={closeAssignSubsetPanel}>
-                  ✕
+                <button className="edit-panel-text-button edit-panel-text-button-cancel" onClick={closeAssignSubsetPanel}>
+                  Cancel
                 </button>
                 <button 
-                  className="edit-panel-icon-button edit-panel-icon-button-save" 
+                  className="edit-panel-text-button edit-panel-text-button-save" 
                   onClick={handleAssignToSubsets}
                   disabled={measures.filter(m => m.selected).length === 0}
                   style={{ 
@@ -1453,9 +1451,7 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                     cursor: measures.filter(m => m.selected).length === 0 ? 'not-allowed' : 'pointer'
                   }}
                 >
-                  <svg viewBox="0 0 24 24">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
+                  Save
                 </button>
               </div>
             </div>
