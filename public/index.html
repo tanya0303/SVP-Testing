@@ -27,30 +27,19 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Salesforce Planning App</title>
     <script>
+      // Handle redirects from 404.html
       (function () {
         var redirect = window.location.search;
-        if (!redirect || redirect.indexOf('?p=') !== 0) {
-          return;
+        if (redirect && redirect.indexOf('?p=/') === 0) {
+          var newPath = redirect.slice(4).split('~').join('&');
+          window.history.replaceState(
+            null, 
+            null,
+            window.location.pathname + newPath + window.location.hash
+          );
         }
-
-        var encodedPath = redirect.slice(3);
-        var decodedPath = encodedPath
-          .split('&')
-          .join('?')
-          .split('~and~')
-          .join('&');
-
-        // Extract the basename from the current URL
-        // For GitHub Pages, this will be '/salesforce-planning-app'
-        var pathname = window.location.pathname;
-        var segments = pathname.split('/').filter(Boolean);
-        var basename = segments.length > 0 ? '/' + segments[0] : '';
-
-        // Prepend basename to the decoded path
-        var fullPath = basename + decodedPath + window.location.hash;
-        window.history.replaceState(null, null, fullPath);
       })();
     </script>
   </head>

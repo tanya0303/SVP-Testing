@@ -4,26 +4,24 @@
     <meta charset="utf-8" />
     <title>Redirecting...</title>
     <script>
-      (function () {
-        var pathSegmentsToKeep = 3;
-        var locationRef = window.location;
-        var pathname = locationRef.pathname;
-        var basePath = pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/');
-        var routePath = pathname.slice(basePath.length);
-
-        locationRef.replace(
-          locationRef.protocol +
-            '//' +
-            locationRef.hostname +
-            (locationRef.port ? ':' + locationRef.port : '') +
-            basePath +
-            '/?p=' +
-            routePath
-              .slice(1)
-              .replace(/&/g, '~and~') +
-            (locationRef.search ? '&' + locationRef.search.slice(1).replace(/&/g, '~and~') : '') +
-            locationRef.hash
-        );
+      // Simple 404 redirect for GitHub Pages
+      (function() {
+        var path = window.location.pathname;
+        var repo = '/salesforce-planning-app/';
+        
+        // If we're not at the repo root
+        if (path !== repo && path !== repo.slice(0, -1)) {
+          // Redirect to index.html with the path encoded in the URL
+          var pathAfterRepo = path.replace(repo, '');
+          window.location.replace(
+            window.location.origin + 
+            repo + 
+            '?p=/' + 
+            pathAfterRepo +
+            window.location.search.slice(1).replace(/&/g, '~') +
+            window.location.hash
+          );
+        }
       })();
     </script>
   </head>
