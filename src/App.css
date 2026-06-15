@@ -5021,6 +5021,67 @@ input[type="checkbox"] {
 }
 
 .planning-grid-button:disabled {
+  background-color: #ecebea;
+  color: #747474;
+  border: 1px solid #939393;
+  cursor: not-allowed;
+}
+
+.planning-grid-button.planning-grid-button-disabled,
+.planning-grid-button.planning-grid-button-disabled:hover,
+.planning-grid-button:disabled,
+.planning-grid-button:disabled:hover {
+  background-color: #ecebea;
+  color: #747474;
+  border: 1px solid #939393;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.planning-grid-tooltip-trigger {
+  position: relative;
+  display: inline-flex;
+}
+
+.planning-grid-tooltip-bubble {
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 10px);
+  transform: translateX(-50%);
+  width: 280px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #032d60;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 20;
+}
+
+.planning-grid-tooltip-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent #032d60 transparent;
+}
+
+.planning-grid-tooltip-trigger.is-disabled:hover .planning-grid-tooltip-bubble {
+  opacity: 1;
+  visibility: visible;
+}
+
+.planning-grid-button:disabled {
   pointer-events: none;
 }
 

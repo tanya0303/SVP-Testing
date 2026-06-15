@@ -27,8 +27,8 @@ export default function CommercialMainContent({
     'step-assortment': false,
     'step-measures': false,
     'step-measure-calculation': false,
-    'step-time': false,
-    'step-users': false,
+    'step-time': true,
+    'step-users': true,
     'hierarchy-within': false,
   });
 
@@ -51,8 +51,8 @@ export default function CommercialMainContent({
   });
 
   // State for Data Cloud toggle and automatic steps
-  const [dataCloudEnabled, setDataCloudEnabled] = useState(false);
-  const [completedAutoSteps, setCompletedAutoSteps] = useState([]);
+  const [dataCloudEnabled, setDataCloudEnabled] = useState(true);
+  const [completedAutoSteps, setCompletedAutoSteps] = useState([1]);
   const isDataCloudProcessing = dataCloudEnabled && completedAutoSteps.length < 1;
   const isDataCloudProvisioned = dataCloudEnabled && completedAutoSteps.length === 1;
   const [isAssortmentProcessing, setIsAssortmentProcessing] = useState(false);
@@ -167,7 +167,7 @@ export default function CommercialMainContent({
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (progress / 100) * circumference;
     
-    // If 100% complete, show green filled circle with white checkmark
+    // If 100% complete, show blue filled circle with white checkmark
     if (progress === 100) {
       return (
         <svg width="24" height="24" viewBox="0 0 24 24" className="progress-ring">
@@ -175,7 +175,7 @@ export default function CommercialMainContent({
             cx="12"
             cy="12"
             r="12"
-            fill="#2e844a"
+            fill="#0176d3"
           />
           <image href={imgCheckIcon} x="4.5" y="4.5" width="15" height="15" />
         </svg>

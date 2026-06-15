@@ -27,8 +27,8 @@ export default function MainContent({
     'step-assortment': false,
     'step-measures': false,
     'step-measure-calculation': false,
-    'step-time': false,
-    'step-users': false,
+    'step-time': true,
+    'step-users': true,
     'hierarchy-within': false,
   });
 
@@ -51,8 +51,8 @@ export default function MainContent({
   });
 
   // State for Data Cloud toggle and automatic steps
-  const [dataCloudEnabled, setDataCloudEnabled] = useState(false);
-  const [completedAutoSteps, setCompletedAutoSteps] = useState([]);
+  const [dataCloudEnabled, setDataCloudEnabled] = useState(true);
+  const [completedAutoSteps, setCompletedAutoSteps] = useState([1]);
   const isDataCloudProcessing = dataCloudEnabled && completedAutoSteps.length < 1;
   const isDataCloudProvisioned = dataCloudEnabled && completedAutoSteps.length === 1;
   const [isAssortmentProcessing, setIsAssortmentProcessing] = useState(false);
@@ -167,7 +167,7 @@ export default function MainContent({
     const circumference = 2 * Math.PI * radius;
     const strokeDashoffset = circumference - (progress / 100) * circumference;
     
-    // If 100% complete, show green filled circle with white checkmark
+    // If 100% complete, show blue filled circle with white checkmark
     if (progress === 100) {
       return (
         <svg width="24" height="24" viewBox="0 0 24 24" className="progress-ring">
@@ -175,7 +175,7 @@ export default function MainContent({
             cx="12"
             cy="12"
             r="12"
-            fill="#2e844a"
+            fill="#0176d3"
           />
           <image href={imgCheckIcon} x="4.5" y="4.5" width="15" height="15" />
         </svg>
@@ -357,30 +357,6 @@ export default function MainContent({
                         <div className="nested-step-buttons">
                           <button className="step-button step-action-link" onClick={openHierarchiesModal2}>Manage Hierarchies</button>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="nested-step">
-                    <div className="nested-step-indicator">
-                      {isAssortmentProcessing ? (
-                        <div className="sub-step-icon sub-step-icon-processing" />
-                      ) : (
-                        <div className={`nested-step-checkbox ${checkboxStates['step-assortment'] ? 'checked' : ''}`} onClick={() => toggleCheckbox('step-assortment')}>
-                          {checkboxStates['step-assortment'] && <img src={imgCheckIcon} alt="Checked" />}
-                        </div>
-                      )}
-                    </div>
-                    <div className="nested-step-content">
-                      <div className="nested-step-main">
-                        <div className="nested-step-text">
-                          <h6 className="nested-step-title">1.2 Save Assortment</h6>
-                          <p className="nested-step-status">
-                            {isAssortmentSuccessful ? 'Assortment run successfully' : 'No Assortment selected yet'}
-                          </p>
-                        </div>
-                        <button className="step-button step-action-link" onClick={handleSaveAssortment}>
-                          {isAssortmentProcessing ? 'Running Assortment...' : 'Save Assortment'}
-                        </button>
                       </div>
                     </div>
                   </div>

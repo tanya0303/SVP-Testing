@@ -285,7 +285,7 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-container modal-hierarchies-2" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header modal-header-simple">
-          <h2 className="modal-title">Manage Hierarchies 2</h2>
+          <h2 className="modal-title">Manage Hierarchies</h2>
           <button className="modal-close-button" onClick={onClose}>
             <img src={imgCloseIcon} alt="Close" />
           </button>
@@ -305,19 +305,6 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
                   {dimension}
                 </button>
               ))}
-            </div>
-            <div className="manage-hierarchies-2-info-box">
-              <p className="manage-hierarchies-2-info-title">Need advanced setup?</p>
-              <p className="manage-hierarchies-2-info-text">
-                Go to Hierarchy Setup to import hierarchy structures, manage detailed mappings, and configure advanced options.
-              </p>
-              <button
-                type="button"
-                className="step-button step-button-outlined"
-                onClick={handleGoToHierarchySetup}
-              >
-                Go to Hierarchy Setup
-              </button>
             </div>
           </div>
 

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Toast from './Toast';
 
 const imgCloseIcon = "data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18M6 6l12 12' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E";
 const imgDragHandleIcon = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='3.5' r='1' fill='%23747474'/%3E%3Ccircle cx='4' cy='7' r='1' fill='%23747474'/%3E%3Ccircle cx='4' cy='10.5' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='3.5' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='7' r='1' fill='%23747474'/%3E%3Ccircle cx='9.5' cy='10.5' r='1' fill='%23747474'/%3E%3C/svg%3E";
@@ -17,6 +18,17 @@ export default function PlanningGridConfig({ onClose, onBack }) {
   const [selectedComponentTab, setSelectedComponentTab] = useState('Dimensions');
   const [hasSavedOnce, setHasSavedOnce] = useState(false);
   const [isAddMeasuresModalOpen, setIsAddMeasuresModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isRolesDropdownOpen, setIsRolesDropdownOpen] = useState(false);
+  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const rolesDropdownRef = useRef(null);
+  const assignableRoles = [
+    'Key Account Manager',
+    'Regional Director',
+    'Account Director',
+  ];
   const [measureSubsets, setMeasureSubsets] = useState([{ id: 'default-subset', name: 'Default Subset' }]);
   const [selectedSubsetId, setSelectedSubsetId] = useState('default-subset');
   const [subsetNameInput, setSubsetNameInput] = useState('');
@@ -181,6 +193,42 @@ export default function PlanningGridConfig({ onClose, onBack }) {
     }
   };
 
+  const toggleRoleSelection = (roleName) => {
+    setSelectedRoles((prev) =>
+      prev.includes(roleName)
+        ? prev.filter((role) => role !== roleName)
+        : [...prev, roleName]
+    );
+  };
+
+  const handleCloseAssignModal = () => {
+    setIsAssignModalOpen(false);
+    setIsRolesDropdownOpen(false);
+  };
+
+  const handleAssign = () => {
+    setToastMessage('Assigned Successfully');
+    setShowToast(true);
+    handleCloseAssignModal();
+  };
+
+  const closeToast = () => {
+    setShowToast(false);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (rolesDropdownRef.current && !rolesDropdownRef.current.contains(event.target)) {
+        setIsRolesDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleCreateSubset = () => {
     const subsetName = subsetNameInput.trim();
     if (!subsetName) {
@@ -270,6 +318,11 @@ export default function PlanningGridConfig({ onClose, onBack }) {
     (sum, ids) => sum + ids.length,
     0
   );
+  const hasRequiredDimensions =
+    selectedRowDimensions.includes('Account') && selectedRowDimensions.includes('Product');
+  const canAssignTo = hasRequiredDimensions && totalSelectedMeasuresCount > 0;
+  const assignDisabledTooltipMessage =
+    'Add Account and Product dimensions, and at least one measure, before assigning this configuration.';
   const measureTypeOptions = ['All Types', ...new Set(measuresData.map((measure) => measure.type))];
   const measureAggregationOptions = ['All Aggregations', ...new Set(measuresData.map((measure) => measure.aggregation))];
   const measureDisaggregationOptions = ['All Disaggregations', ...new Set(measuresData.map((measure) => measure.disaggregation))];
@@ -439,12 +492,21 @@ export default function PlanningGridConfig({ onClose, onBack }) {
       <div className="planning-grid-header">
         <h1 className="planning-grid-title">KAMPlanConfig</h1>
         <div className="planning-grid-header-actions">
-          <button
-            className={`planning-grid-button ${hasSavedOnce ? 'planning-grid-button-neutral' : 'planning-grid-button-disabled'}`}
-            disabled={!hasSavedOnce}
-          >
-            Assign To
-          </button>
+          <div className={`planning-grid-tooltip-trigger ${!canAssignTo ? 'is-disabled' : ''}`}>
+            <button
+              className={`planning-grid-button planning-grid-button-neutral ${!canAssignTo ? 'planning-grid-button-disabled' : ''}`}
+              onClick={() => setIsAssignModalOpen(true)}
+              disabled={!canAssignTo}
+              type="button"
+            >
+              Assign To
+            </button>
+            {!canAssignTo && (
+              <div className="planning-grid-tooltip-bubble" role="tooltip">
+                {assignDisabledTooltipMessage}
+              </div>
+            )}
+          </div>
           <button
             className="planning-grid-button planning-grid-button-neutral"
             onClick={handleCancel}
@@ -1350,6 +1412,96 @@ export default function PlanningGridConfig({ onClose, onBack }) {
             </div>
           </div>
         </div>
+      )}
+
+      {isAssignModalOpen && (
+        <div className="modal-overlay" onClick={handleCloseAssignModal}>
+          <div
+            className="modal-container modal-container-compact planning-view-assign-modal"
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: '680px', maxWidth: '95vw' }}
+          >
+            <div className="modal-header">
+              <div className="modal-header-content">
+                <h2 className="modal-title">Assign Plan Configurations</h2>
+              </div>
+              <button className="modal-close-button" onClick={handleCloseAssignModal}>
+                <img src={imgCloseIcon} alt="Close" />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="modal-content planning-view-assign-modal-content">
+                <div className="planning-view-assign-field">
+                  <label className="planning-view-assign-label">
+                    Select roles you want to assign this plan config to
+                  </label>
+                  <div className="planning-view-role-dropdown" ref={rolesDropdownRef}>
+                    <button
+                      type="button"
+                      className="planning-view-role-dropdown-trigger"
+                      onClick={() => setIsRolesDropdownOpen((prev) => !prev)}
+                    >
+                      <span>
+                        {selectedRoles.length
+                          ? `${selectedRoles.length} role${selectedRoles.length > 1 ? 's' : ''} selected`
+                          : 'Select roles'}
+                      </span>
+                      <img src={imgDropdownSmall} alt="" />
+                    </button>
+                    {isRolesDropdownOpen && (
+                      <div className="planning-view-role-dropdown-menu">
+                        {assignableRoles.map((roleName) => (
+                          <label key={roleName} className="planning-view-role-dropdown-option">
+                            <input
+                              type="checkbox"
+                              checked={selectedRoles.includes(roleName)}
+                              onChange={() => toggleRoleSelection(roleName)}
+                            />
+                            <span>{roleName}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {selectedRoles.length > 0 && (
+                    <div className="planning-view-role-pill-list">
+                      {selectedRoles.map((roleName) => (
+                        <span key={roleName} className="planning-view-role-pill">
+                          {roleName}
+                          <button
+                            type="button"
+                            className="planning-view-role-pill-remove"
+                            onClick={() => toggleRoleSelection(roleName)}
+                            aria-label={`Remove ${roleName}`}
+                          >
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer-buttons" style={{ padding: '0 24px 20px' }}>
+              <button className="modal-cancel-button" onClick={handleCloseAssignModal}>
+                Cancel
+              </button>
+              <button className="modal-save-button" onClick={handleAssign}>
+                Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showToast && (
+        <Toast
+          message={toastMessage}
+          onClose={closeToast}
+        />
       )}
 
     </div>
