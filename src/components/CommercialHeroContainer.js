@@ -60,7 +60,7 @@ export default function HeroContainer({
               <img alt="" src={imgProgressRing} style={{ width: '100%', height: '100%' }} />
             </div>
             <p className="progress-text">
-              <span className="progress-text-bold">1 of 4 </span>
+              <span className="progress-text-bold">3 of 6 </span>
               <span className="progress-text-light"> Steps Completed</span>
             </p>
           </div>
