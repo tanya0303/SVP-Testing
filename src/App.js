@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
 import './App.css';
 import GlobalHeader from './components/GlobalHeader';
 import LeftSidebar from './components/LeftSidebar';
@@ -126,7 +126,7 @@ function WorkspaceLayout({ page }) {
 
 function App() {
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/sales-volume/setup" replace />} />
         <Route path="/:workspace/setup" element={<WorkspaceLayout page="setup" />} />
@@ -135,7 +135,7 @@ function App() {
         <Route path="/:workspace/hierarchy-setup" element={<WorkspaceLayout page="hierarchySetup" />} />
         <Route path="/:workspace/measures" element={<WorkspaceLayout page="measures" />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
