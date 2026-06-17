@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import Toast from './Toast';
+import React from 'react';
 
 const imgCloseIcon = "data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M18 6L6 18M6 6l12 12' stroke='%23666' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E";
 
@@ -10,23 +9,7 @@ const imgLightBulbIcon = "data:image/svg+xml,%3Csvg width='16' height='16' viewB
 const imgSearchIcon = "data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6.5' cy='6.5' r='4.5' stroke='%23666' stroke-width='1.5'/%3E%3Cpath d='M10 10l3.5 3.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
 
 export default function ManageUserAccessModal({ isOpen, onClose }) {
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-
   if (!isOpen) return null;
-
-  const handleSave = () => {
-    setToastMessage('User permissions updated successfully');
-    setShowToast(true);
-    // Optionally close modal after a delay
-    setTimeout(() => {
-      onClose();
-    }, 1000);
-  };
-
-  const closeToast = () => {
-    setShowToast(false);
-  };
 
   // Sample user data
   const users = [
@@ -169,7 +152,7 @@ export default function ManageUserAccessModal({ isOpen, onClose }) {
                 <thead>
                   <tr>
                     <th className="table-cell-checkbox">
-                      <input type="checkbox" />
+                      <input type="checkbox" disabled />
                     </th>
                     <th>Name</th>
                     <th>Username</th>
@@ -181,7 +164,7 @@ export default function ManageUserAccessModal({ isOpen, onClose }) {
                   {users.map((user, index) => (
                     <tr key={index}>
                       <td className="table-cell-checkbox">
-                        <input type="checkbox" />
+                        <input type="checkbox" disabled />
                       </td>
                       <td>{user.name}</td>
                       <td>{user.username}</td>
@@ -195,20 +178,10 @@ export default function ManageUserAccessModal({ isOpen, onClose }) {
 
             {/* Footer Buttons */}
             <div className="modal-footer-buttons">
-              <button className="modal-cancel-button" onClick={onClose}>Cancel</button>
-              <button className="modal-save-button" onClick={handleSave}>Save</button>
+              <button className="modal-save-button" onClick={onClose}>OK</button>
             </div>
           </div>
         </div>
-
-        {/* Toast Notification */}
-        {showToast && (
-          <Toast
-            message={toastMessage}
-            onClose={closeToast}
-            duration={3000}
-          />
-        )}
       </div>
     </div>
   );

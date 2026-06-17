@@ -14,7 +14,13 @@ const imgDropdownSmall = "data:image/svg+xml,%3Csvg width='12' height='12' viewB
 const imgEditIconSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2.4 11.6l2.1-.4 5.2-5.2-1.7-1.7-5.2 5.2-.4 2.1z' stroke='%23666' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.1 3.6l1.7 1.7' stroke='%23666' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E";
 const imgDeleteIconSmall = "data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.5 3.5L3.5 10.5M3.5 3.5l7 7' stroke='%23666' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E";
 
-export default function PlanningGridConfig({ onClose, onBack }) {
+export default function PlanningGridConfig({
+  onClose,
+  onBack,
+  configName = 'KAMPlanConfig',
+  configDescription = '',
+  onSaveConfig,
+}) {
   const [selectedComponentTab, setSelectedComponentTab] = useState('Dimensions');
   const [hasSavedOnce, setHasSavedOnce] = useState(false);
   const [isAddMeasuresModalOpen, setIsAddMeasuresModalOpen] = useState(false);
@@ -182,6 +188,10 @@ export default function PlanningGridConfig({ onClose, onBack }) {
 
   const handleSave = () => {
     setHasSavedOnce(true);
+    if (onSaveConfig) {
+      onSaveConfig({ name: configName, description: configDescription });
+      return;
+    }
     if (onBack) {
       onBack();
     }
@@ -321,6 +331,7 @@ export default function PlanningGridConfig({ onClose, onBack }) {
   const hasRequiredDimensions =
     selectedRowDimensions.includes('Account') && selectedRowDimensions.includes('Product');
   const canAssignTo = hasRequiredDimensions && totalSelectedMeasuresCount > 0;
+  const canSaveConfig = canAssignTo;
   const assignDisabledTooltipMessage =
     'Add Account and Product dimensions, and at least one measure, before assigning this configuration.';
   const measureTypeOptions = ['All Types', ...new Set(measuresData.map((measure) => measure.type))];
@@ -490,7 +501,7 @@ export default function PlanningGridConfig({ onClose, onBack }) {
     <div className="planning-grid-config">
       {/* Page Header */}
       <div className="planning-grid-header">
-        <h1 className="planning-grid-title">KAMPlanConfig</h1>
+        <h1 className="planning-grid-title">{configName}</h1>
         <div className="planning-grid-header-actions">
           <div className={`planning-grid-tooltip-trigger ${!canAssignTo ? 'is-disabled' : ''}`}>
             <button
@@ -514,13 +525,21 @@ export default function PlanningGridConfig({ onClose, onBack }) {
           >
             Cancel
           </button>
-          <button 
-            className="planning-grid-button planning-grid-button-brand"
-            onClick={handleSave}
-            type="button"
-          >
-            Save
-          </button>
+          <div className={`planning-grid-tooltip-trigger ${!canSaveConfig ? 'is-disabled' : ''}`}>
+            <button 
+              className={`planning-grid-button planning-grid-button-brand ${!canSaveConfig ? 'planning-grid-button-disabled' : ''}`}
+              onClick={handleSave}
+              disabled={!canSaveConfig}
+              type="button"
+            >
+              Save
+            </button>
+            {!canSaveConfig && (
+              <div className="planning-grid-tooltip-bubble" role="tooltip">
+                {assignDisabledTooltipMessage}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

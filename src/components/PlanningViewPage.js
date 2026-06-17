@@ -11,10 +11,18 @@ export default function PlanningViewPage({
   onNavigateToGridConfig,
   onNavigateToMeasuresPage,
   onNavigateToHierarchySetup,
+  planConfigs = [],
+  planConfigSavedAt,
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedConfigIds, setSelectedConfigIds] = useState([]);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [newConfigName, setNewConfigName] = useState('');
+  const [newConfigDescription, setNewConfigDescription] = useState('');
+  const [newConfigUsageType, setNewConfigUsageType] = useState('Sales Volume Planning');
+  const [newConfigSubType, setNewConfigSubType] = useState('Customer Business Plan');
+  const [createConfigMethod, setCreateConfigMethod] = useState('scratch');
   const [isRolesDropdownOpen, setIsRolesDropdownOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [showToast, setShowToast] = useState(false);
@@ -25,26 +33,6 @@ export default function PlanningViewPage({
     'Regional Director',
     'Account Director',
   ];
-  const [planConfigs] = useState([
-    {
-      id: 1,
-      name: 'KAMPlanConfig',
-      description: 'KAM planning grid configuration for account planning users',
-      dimensions: '2 dimensions',
-      measures: '0 measures',
-      status: 'Draft',
-      updatedBy: 'Admin',
-    },
-    {
-      id: 2,
-      name: 'RetailPlanConfig',
-      description: 'Retail planning grid setup for product and store planning',
-      dimensions: '3 dimensions',
-      measures: '4 measures',
-      status: 'Active',
-      updatedBy: 'Admin',
-    },
-  ]);
 
   const filteredPlanConfigs = planConfigs.filter((config) => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -98,6 +86,27 @@ export default function PlanningViewPage({
     setIsRolesDropdownOpen(false);
   };
 
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+    setNewConfigName('');
+    setNewConfigDescription('');
+    setNewConfigUsageType('Sales Volume Planning');
+    setNewConfigSubType('Customer Business Plan');
+    setCreateConfigMethod('scratch');
+  };
+
+  const handleCreatePlanConfig = () => {
+    handleCloseCreateModal();
+    onNavigateToGridConfig({
+      configName: newConfigName.trim() || 'KAMPlanConfig',
+      configDescription: newConfigDescription.trim(),
+    });
+  };
+
   const handleAssign = () => {
     setToastMessage('Assigned Successfully');
     setShowToast(true);
@@ -107,6 +116,12 @@ export default function PlanningViewPage({
   const closeToast = () => {
     setShowToast(false);
   };
+
+  useEffect(() => {
+    if (!planConfigSavedAt) return;
+    setToastMessage('Plan Configuration saved successfully');
+    setShowToast(true);
+  }, [planConfigSavedAt]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -179,7 +194,7 @@ export default function PlanningViewPage({
               >
                 Assign To
               </button>
-              <button className="planning-view-button planning-view-button-primary" onClick={onNavigateToGridConfig}>
+              <button className="planning-view-button planning-view-button-primary" onClick={handleOpenCreateModal}>
                 + Create new
               </button>
             </div>
@@ -240,7 +255,10 @@ export default function PlanningViewPage({
                         <button
                           type="button"
                           className="planning-grid-link-button"
-                          onClick={onNavigateToGridConfig}
+                          onClick={() => onNavigateToGridConfig({
+                            configName: config.name,
+                            configDescription: config.description,
+                          })}
                         >
                           {config.name}
                         </button>
@@ -271,9 +289,9 @@ export default function PlanningViewPage({
       {isAssignModalOpen && (
         <div className="modal-overlay" onClick={handleCloseAssignModal}>
           <div
-            className="modal-container modal-container-compact planning-view-assign-modal"
+            className="modal-container modal-container-compact planning-view-assign-modal planning-view-create-modal"
             onClick={(e) => e.stopPropagation()}
-            style={{ width: '680px', maxWidth: '95vw' }}
+            style={{ width: '980px', maxWidth: '96vw' }}
           >
             <div className="modal-header">
               <div className="modal-header-content">
@@ -345,6 +363,132 @@ export default function PlanningViewPage({
               </button>
               <button className="modal-save-button" onClick={handleAssign}>
                 Assign
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isCreateModalOpen && (
+        <div className="modal-overlay" onClick={handleCloseCreateModal}>
+          <div
+            className="modal-container modal-container-compact planning-view-assign-modal planning-view-create-modal"
+            onClick={(e) => e.stopPropagation()}
+            style={{ width: '980px', maxWidth: '96vw' }}
+          >
+            <div className="modal-header">
+              <div className="modal-header-content">
+                <h2 className="modal-title">Create Plan Configuration</h2>
+              </div>
+              <button className="modal-close-button" onClick={handleCloseCreateModal}>
+                <img src={imgCloseIcon} alt="Close" />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <div className="modal-content planning-view-create-modal-content">
+                <div className="planning-view-create-section">
+                  <h3 className="planning-view-create-section-title">Basic Details</h3>
+                  <div className="planning-view-assign-field">
+                    <label className="planning-view-assign-label" htmlFor="new-plan-config-name">
+                      * Name
+                    </label>
+                    <input
+                      id="new-plan-config-name"
+                      type="text"
+                      className="edit-form-input"
+                      value={newConfigName}
+                      onChange={(e) => setNewConfigName(e.target.value)}
+                      placeholder="Enter configuration name"
+                    />
+                  </div>
+                  <div className="planning-view-assign-field" style={{ marginTop: '14px' }}>
+                    <label className="planning-view-assign-label" htmlFor="new-plan-config-description">
+                      Description
+                    </label>
+                    <textarea
+                      id="new-plan-config-description"
+                      className="edit-form-textarea"
+                      value={newConfigDescription}
+                      onChange={(e) => setNewConfigDescription(e.target.value)}
+                      placeholder="Enter configuration description"
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div className="planning-view-create-section" style={{ marginTop: '18px' }}>
+                  <h3 className="planning-view-create-section-title">Plan Configuration Details</h3>
+                  <div className="planning-view-assign-field">
+                    <label className="planning-view-assign-label" htmlFor="new-plan-config-usage-type">
+                      Usage Type
+                    </label>
+                    <select
+                      id="new-plan-config-usage-type"
+                      className="edit-form-select"
+                      value={newConfigUsageType}
+                      onChange={(e) => setNewConfigUsageType(e.target.value)}
+                    >
+                      <option>Sales Volume Planning</option>
+                    </select>
+                  </div>
+                  <div className="planning-view-assign-field" style={{ marginTop: '14px' }}>
+                    <label className="planning-view-assign-label" htmlFor="new-plan-config-sub-type">
+                      SubType
+                    </label>
+                    <select
+                      id="new-plan-config-sub-type"
+                      className="edit-form-select"
+                      value={newConfigSubType}
+                      onChange={(e) => setNewConfigSubType(e.target.value)}
+                    >
+                      <option>Customer Business Plan</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="planning-view-create-section" style={{ marginTop: '18px' }}>
+                  <label className="planning-view-assign-label">
+                    *How do you wish to create this configuration
+                  </label>
+                  <div className="planning-view-create-option-grid">
+                    <button
+                      type="button"
+                      className="planning-view-create-option-card planning-view-create-option-card-disabled"
+                      disabled
+                      aria-disabled="true"
+                    >
+                      <span className="planning-view-create-option-icon" aria-hidden="true">📋</span>
+                      <span>
+                        <strong>From OOTB Template</strong>
+                        <small>Account Planning and Forecasting template with pre-seeded configs</small>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      className={`planning-view-create-option-card ${createConfigMethod === 'scratch' ? 'active' : ''}`}
+                      onClick={() => setCreateConfigMethod('scratch')}
+                    >
+                      <span className="planning-view-create-option-icon" aria-hidden="true">✏️</span>
+                      <span>
+                        <strong>From Scratch</strong>
+                        <small>Build your own template with choice of dimensions and measures</small>
+                      </span>
+                    </button>
+                  </div>
+                  <div className="planning-view-create-option-info">
+                    Selecting from scratch template allows you to create plan configuration on your own. Choose your own dimensions and hierarchies and measures
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer-buttons" style={{ padding: '0 24px 20px' }}>
+              <button className="modal-cancel-button" onClick={handleCloseCreateModal}>
+                Cancel
+              </button>
+              <button className="modal-save-button" onClick={handleCreatePlanConfig}>
+                Create
               </button>
             </div>
           </div>

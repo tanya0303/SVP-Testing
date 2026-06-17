@@ -295,16 +295,21 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
           <div className="manage-hierarchies-2-panel manage-hierarchies-2-panel-left">
             <p className="manage-hierarchies-2-panel-title">Dimensions</p>
             <div className="manage-hierarchies-2-dimension-list">
-              {dimensions.map((dimension) => (
+              {dimensions.map((dimension) => {
+                const isDimensionLocked = createPanelOpen && dimension !== createDimension;
+                return (
                 <button
                   key={dimension}
                   type="button"
-                  className={`manage-hierarchies-2-dimension-item ${selectedDimension === dimension ? 'active' : ''}`}
+                  className={`manage-hierarchies-2-dimension-item ${selectedDimension === dimension ? 'active' : ''} ${isDimensionLocked ? 'disabled' : ''}`}
                   onClick={() => setSelectedDimension(dimension)}
+                  disabled={isDimensionLocked}
+                  aria-disabled={isDimensionLocked}
                 >
                   {dimension}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -475,6 +480,8 @@ export default function ManageHierarchiesModal2({ isOpen, onClose, onGoToHierarc
                       className="clone-form-input clone-form-select"
                       value={createDimension}
                       onChange={(e) => setCreateDimension(e.target.value)}
+                      disabled
+                      aria-disabled="true"
                     >
                       {dimensions.map((dimension) => (
                         <option key={dimension} value={dimension}>{dimension}</option>

@@ -74,6 +74,13 @@ export default function ManageMeasuresModal({
     setShowToast(false);
   };
 
+  const handleDone = () => {
+    showSuccessToast('Updates saved successfully');
+    setTimeout(() => {
+      onClose();
+    }, 900);
+  };
+
   const handleGoToSetupDetails = () => {
     onClose();
     if (typeof onGoToSetupDetails === 'function') {
@@ -529,7 +536,7 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
 
           <div className="measures-info-bar">
             <span className="measures-info-bar-text">Need more context on these measures?</span>
-            <button className="measures-info-bar-link" onClick={handleGoToSetupDetails}>
+            <button className="measures-info-bar-link" type="button" disabled aria-disabled="true">
               Go to Setup for more details
             </button>
           </div>
@@ -599,9 +606,6 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
             <table className="measures-table">
               <thead>
                 <tr>
-                  <th className="table-cell-checkbox">
-                    <input type="checkbox" />
-                  </th>
                   <th>Measure Name</th>
                   <th>Description</th>
                   <th>Type</th>
@@ -619,9 +623,6 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
                     key={index}
                     className={(editPanelOpen || clonePanelOpen || deletePanelOpen || createPanelOpen) && selectedMeasure?.name === measure.name ? 'row-selected' : ''}
                   >
-                    <td className="table-cell-checkbox">
-                      <input type="checkbox" defaultChecked={measure.selected} />
-                    </td>
                     <td style={{ cursor: 'pointer', color: '#0176d3' }} onClick={() => handleMenuAction('edit', measure)}>{measure.name}</td>
                     <td>{measure.description}</td>
                     <td>{measure.type || 'Read'}</td>
@@ -720,7 +721,7 @@ I'll intelligently assign the appropriate Source DMO based on your needs.`;
           <div className="modal-footer modal-footer-bleed">
             <button 
               className="modal-done-button" 
-              onClick={onClose}
+              onClick={handleDone}
               disabled={editPanelOpen || clonePanelOpen || deletePanelOpen || createPanelOpen || assignSubsetPanelOpen}
             >
               Done

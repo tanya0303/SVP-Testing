@@ -1687,6 +1687,12 @@ input[type="checkbox"] {
   margin: 0 auto;
 }
 
+.users-table .table-cell-checkbox input[type="checkbox"]:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
 .modal-footer-buttons {
   display: flex;
   justify-content: flex-end;
@@ -2280,6 +2286,14 @@ input[type="checkbox"] {
   color: #032d60;
   font-weight: 600;
   box-shadow: inset 3px 0 0 #0176d3;
+}
+
+.manage-hierarchies-2-dimension-item.disabled,
+.manage-hierarchies-2-dimension-item:disabled {
+  color: #9aa0a6;
+  background-color: #f8f9fb;
+  cursor: not-allowed;
+  opacity: 0.75;
 }
 
 .manage-hierarchies-2-panel-right {
@@ -4704,8 +4718,107 @@ input[type="checkbox"] {
   height: 360px;
 }
 
+.planning-view-create-modal {
+  height: min(860px, 92vh);
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+.planning-view-create-modal .modal-body {
+  display: block;
+  overflow-y: auto;
+}
+
+.planning-view-create-modal .modal-content {
+  flex: 0 0 auto;
+  padding-bottom: 10px;
+}
+
 .planning-view-assign-modal-content {
   gap: 12px;
+}
+
+.planning-view-create-modal-content {
+  gap: 0;
+}
+
+.planning-view-create-section-title {
+  margin: 0 0 10px;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #032d60;
+}
+
+.planning-view-create-option-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.planning-view-create-option-card {
+  border: 1px solid #d8dde6;
+  border-radius: 10px;
+  background: #fff;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.planning-view-create-option-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 999px;
+  background: #1b96ff;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.planning-view-create-option-card strong {
+  display: block;
+  color: #032d60;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.planning-view-create-option-card small {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.planning-view-create-option-card.active {
+  border-color: #0176d3;
+  box-shadow: inset 0 0 0 1px #0176d3;
+  background: #f3f8ff;
+}
+
+.planning-view-create-option-card-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-color: #d8dde6;
+  box-shadow: none;
+  background: #f8f9fb;
+}
+
+.planning-view-create-option-info {
+  margin-top: 12px;
+  background: #dbe8ff;
+  color: #294f7a;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .planning-view-assign-field {
